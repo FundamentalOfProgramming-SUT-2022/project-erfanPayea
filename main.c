@@ -66,10 +66,16 @@ int get_text(char s[], int i, char text[])
             kh = 1;
             printf("invalid command");
         }
+
+        for (int uh = v; uh <v+5 ; ++uh) {
+            text[v] = 0;
+        }
+
         while (s[i] ==' ')
             i++;
     }
     return 10 * i + kh;
+    printf("%s", text);
 }
 
 int get_address(char s[], int i, char address[])
@@ -110,11 +116,15 @@ int get_address(char s[], int i, char address[])
         else
             i++;
     }
+    for (int uh = v; uh < v+5; ++uh) {
+        address[v+38] = 0;
+    }
 
     while (s[i] ==' ')
         i++;
 
     return 10 * i +mark;
+
 }
 
 int check(char a[], char b[])
@@ -491,6 +501,7 @@ int main() {
                         while(fgets(matn, 100, fptr))
                             printf("%s", matn);
                     }
+                    printf("\n");
 
                     fclose(fptr);
                 }
@@ -1744,7 +1755,7 @@ int main() {
                             {
                                 int found = -1;
                                 j=0;
-                                while (j<f-size)
+                                while (j<=f-size)
                                 {
                                     k = 0;
                                     while (k<size)
@@ -1776,7 +1787,7 @@ int main() {
         }
         else if(check(order, o_replace))
         {
-            if(check_mode(mode, m_str))
+            if(check_mode(mode, m_str1))
             {
                 int mark = get_text(s,i,text);
                 i = mark/10;
@@ -1797,153 +1808,287 @@ int main() {
                     for ( j; j <10 ; ++j) {
                         mode[j]= 0;
                     }
-                    if(check_mode(mode, m_file))
+                    if(check_mode(mode, m_str2))
                     {
                         while(s[i] ==' ')
                             i++;
 
-                        mark = get_address(s,i,address);
+                        char text2[1000];
+
+                        for (int k = 0; k < 1000; ++k) {
+                            text2[k] = 0;
+                        }
+
+                        mark = get_text(s,i,text2);
                         i = mark/10;
                         mark = mark % 10;
 
                         if(!mark)
                         {
-                            char matn[1000];
-
-                            int k,f=0;
-
-                            fptr = fopen(address, "r");
-
-                            while (fgets(matn, 1000, fptr))
-                            {
-                                k = 0;
-                                while (matn[k]!=0)
-                                {
-                                    fff[f] = matn[k];
-                                    f++;
-                                    k++;
-                                }
+                            for (int k = 0; k < 10; ++k) {
+                                mode[k] = 0;
                             }
-                            k=0;
-                            while (text[k]!=0)
-                                k++;
-                            int size = k;
+                            j=0;
 
-                            for (int l = f; l <f+5 ; ++l) {
-                                fff[l] = 0;
+                            while (s[i]!= ' ') {
+                                mode[j] = s[i];
+                                i++;
+                                j++;
                             }
-
-                            if(s[i]!=0)
+                            while (s[i]==' ')
+                                i++;
+                            if(check_mode(mode, m_file))
                             {
-                                j=0;
-                                while (s[i]!=' ' && s[i]!=0) {
-                                    mode[j] = s[i];
-                                    j++;
-                                    i++;
-                                }
-                                for (j; j < 10; ++j) {
-                                    mode[j] = 0;
-                                }
-
-                                if(check_mode(mode, m_at))
-                                {
-                                    while (s[i] ==' ')
-                                        i++;
-
-                                    int at = s[i] - 48;
+                                while (s[i] == ' ')
                                     i++;
 
-                                    while (s[i]<58 && s[i]>47) {
-                                        at = at * 10 + s[i] - 48;
-                                        i++;
+                                mark = get_address(s,i,address);
+                                i = mark/10;
+                                mark = mark%10;
+
+                                fptr = fopen(address, "r");
+                                if(fptr==NULL)
+                                {
+                                    printf("invalid address.\n");
+                                    mark =1;
+                                }
+
+                                if(!mark)
+                                {
+                                    char matn[1000];
+                                    for (int k = 0; k < 1000; ++k) {
+                                        matn[k] = 0;
                                     }
-                                    if(s[i]!=' ' && s[i]!=0)
-                                        printf("invalid command.\n");
-                                    else
+
+                                    int k,f=0;
+
+                                    while (fgets(matn, 1000, fptr))
                                     {
-                                        while (s[i] ==' ')
-                                            i++;
-                                        if(s[i]!=0)
-                                            printf("invalid command.\n");
-                                        else
+                                        k = 0;
+                                        while (matn[k]!=0)
                                         {
-                                            int found = -1,counter=0;
-                                            j=0;
-                                            while (j<f-size +1 && counter<at)
+                                            fff[f] = matn[k];
+                                            f++;
+                                            k++;
+                                        }
+                                    }
+                                    k=0;
+                                    while (text[k]!=0)
+                                        k++;
+                                    int size = k;
+
+                                    for (int l = f; l <f+5 ; ++l) {
+                                        fff[l] = 0;
+                                    }
+
+                                    if(s[i]!=0)
+                                    {
+                                        j=0;
+                                        while (s[i]!=' ' && s[i]!=0) {
+                                            mode[j] = s[i];
+                                            j++;
+                                            i++;
+                                        }
+                                        for (j; j < 10; ++j) {
+                                            mode[j] = 0;
+                                        }
+
+                                        if(check_mode(mode, m_at))
+                                        {
+                                            while (s[i] ==' ')
+                                                i++;
+
+                                            int at = s[i] - 48;
+                                            i++;
+
+                                            while (s[i]<58 && s[i]>47) {
+                                                at = at * 10 + s[i] - 48;
+                                                i++;
+                                            }
+                                            if(s[i]!=' ' && s[i]!=0)
+                                                printf("invalid command.\n");
+                                            else
                                             {
-                                                k = 0;
-                                                while (k<size)
+                                                while (s[i] ==' ')
+                                                    i++;
+                                                if(s[i]!=0)
+                                                    printf("invalid command.\n");
+                                                else
                                                 {
-                                                    if(fff[j+k] == text[k])
+                                                    int found = -1,counter=0;
+                                                    j=0;
+                                                    while (j<f-size +1 && counter<at)
+                                                    {
+                                                        k = 0;
+                                                        while (k<size)
+                                                        {
+                                                            if(fff[j+k] == text[k])
+                                                                k++;
+                                                            else
+                                                                break;
+                                                        }
+                                                        if(k==size)
+                                                        {
+                                                            found = j;
+                                                            counter++;
+                                                        }
+                                                        j++;
+                                                    }
+
+                                                    if(counter!=at)
+                                                        printf("There are less than %d %s in this file\n", at,text);
+                                                    else
+                                                    {
+                                                        printf("The string2 was successfully replaced into the file.\n");
+                                                        int size2 = 0;
+                                                        j=0;
+                                                        while (text2[j]!=0)
+                                                        {
+                                                            size2 ++;
+                                                            j++;
+                                                        }
+                                                        int d = size2 -size;
+
+                                                        if(d>=0)
+                                                        {
+                                                            for (int l = 9999; l >=found+size2 ; --l) {
+                                                                fff[l] = fff[l-d];
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            for (int l = found+size2; l <10000 ; ++l) {
+                                                                fff[l] = fff[l-d];
+                                                            }
+                                                        }
+
+                                                        for (int l = found; l <found+size2 ; ++l) {
+                                                            fff[l] = text2[l-found];
+                                                        }
+                                                        fclose(fptr);
+                                                        fptr = fopen(address, "w");
+                                                        fprintf(fptr, "%s", fff);
+
+                                                    }
+                                                }
+                                            }
+
+                                        }
+                                        else if(check_mode(mode, m_all)) {
+                                            int found = -1;
+                                            j = 0;
+                                            while (j < f - size + 1) {
+                                                k = 0;
+                                                while (k < size) {
+                                                    if (fff[j + k] == text[k])
                                                         k++;
                                                     else
                                                         break;
                                                 }
-                                                if(k==size)
-                                                {
+                                                if (k == size) {
                                                     found = j;
-                                                    counter++;
+
+                                                    int size2 = 0;
+                                                    j=0;
+                                                    while (text2[j]!=0)
+                                                    {
+                                                        size2 ++;
+                                                        j++;
+                                                    }
+                                                    int d = size2 -size;
+
+                                                    if(d>=0)
+                                                    {
+                                                        for (int l = 9999; l >=found+size2 ; --l) {
+                                                            fff[l] = fff[l-d];
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        for (int l = found+size2; l <10000 ; ++l) {
+                                                            fff[l] = fff[l-d];
+                                                        }
+                                                    }
+
+                                                    for (int l = found; l <found+size2 ; ++l) {
+                                                        fff[l] = text2[l-found];
+                                                    }
+                                                    fclose(fptr);
+                                                    fptr = fopen(address, "w");
+                                                    fprintf(fptr, "%s", fff);
+
                                                 }
                                                 j++;
                                             }
-                                            if(counter==at)
-                                                printf("%d \n", found);
+                                            if (found == -1)
+                                                printf("There are no %s in this file.\n", text);
                                             else
-                                                printf("%d\n", -1);
-                                        }
-                                    }
-
-                                }
-                                else if(check_mode(mode, m_all)) {
-                                    int found = -1;
-                                    j = 0;
-                                    while (j < f - size + 1) {
-                                        k = 0;
-                                        while (k < size) {
-                                            if (fff[j + k] == text[k])
-                                                k++;
-                                            else
-                                                break;
-                                        }
-                                        if (k == size) {
-                                            found = 1;
-                                            printf("%d ", j);
+                                                printf("String2 was successfully replaced into the file.\n");
 
                                         }
-                                        j++;
-                                    }
-                                    if (found == -1)
-                                        printf("%d\n", -1);
-                                    else
-                                        printf("\n");
-
-                                }
-                                else
-                                    printf("invalid command.\n");
-                            }
-                            else
-                            {
-                                int found = -1;
-                                j=0;
-                                while (j<f-size)
-                                {
-                                    k = 0;
-                                    while (k<size)
-                                    {
-                                        if(fff[j+k] == text[k])
-                                            k++;
                                         else
-                                            break;
-                                    }
-                                    if(k==size)
-                                    {
-                                        found = j;
-                                        break;
+                                            printf("invalid command.\n");
                                     }
                                     else
-                                        j++;
+                                    {
+                                        int found = -1;
+                                        j=0;
+                                        while (j<=f-size)
+                                        {
+                                            k = 0;
+                                            while (k<size)
+                                            {
+                                                if(fff[j+k] == text[k])
+                                                    k++;
+                                                else
+                                                    break;
+                                            }
+                                            if(k==size)
+                                            {
+                                                found = j;
+                                                break;
+                                            }
+                                            else
+                                                j++;
+                                        }
+                                        if(found==-1)
+                                            printf("Theres no %s in this file.\n", text);
+                                        else
+                                        {
+                                            printf("The str2 was successfully replaced into the file.\n");
+                                            int size2 = 0;
+                                            j=0;
+                                            while (text2[j]!=0)
+                                            {
+                                                size2 ++;
+                                                j++;
+                                            }
+                                            int d = size2 -size;
+
+                                            if(d>=0)
+                                            {
+                                                for (int l = 9999; l >=found+size2 ; --l) {
+                                                    fff[l] = fff[l-d];
+                                                }
+                                            }
+                                            else
+                                            {
+                                                for (int l = found+size2; l <10000 ; ++l) {
+                                                    fff[l] = fff[l-d];
+                                                }
+                                            }
+
+                                            for (int l = found; l <found+size2 ; ++l) {
+                                                fff[l] = text2[l-found];
+                                            }
+                                            fclose(fptr);
+                                            fptr = fopen(address, "w");
+                                            fprintf(fptr, "%s", fff);
+
+                                        }
+                                    }
                                 }
-                                printf("%d \n", found);
+                                fclose(fptr);
                             }
 
                         }
